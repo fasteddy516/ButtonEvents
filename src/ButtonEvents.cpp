@@ -5,22 +5,22 @@
 ButtonEvents::ButtonEvents() {
   debouncedButton.interval(DEFAULT_DEBOUNCE_MS);
   doubleTapTime_ms = DEFAULT_DOUBLETAP_MS;
-	holdTime_ms = DEFAULT_HOLD_MS;
+  holdTime_ms = DEFAULT_HOLD_MS;
   isActiveLow = DEFAULT_ACTIVE_LOW;
-	pressTime_ms = 0; // initialize button timestamps and states...
-	releaseTime_ms = 0;
-	buttonState = idle;
-	buttonEvent = none;
+  pressTime_ms = 0; // initialize button timestamps and states...
+  releaseTime_ms = 0;
+  buttonState = idle;
+  buttonEvent = none;
 }
 
 // passthru to Bounce2 attach() method
 void ButtonEvents::attach(int pin) {
-	debouncedButton.attach(pin);
+  debouncedButton.attach(pin);
 }
 
 // passthru to Bounce2 attach() overload
 void ButtonEvents::attach(int pin, int mode) {
-	debouncedButton.attach(pin, mode);
+  debouncedButton.attach(pin, mode);
 }
 
 // set button mode to active high
@@ -69,66 +69,62 @@ bool ButtonEvents::buttonReleased() {
 
 // calls the Bounce2 update() method, then runs button event detection logic
 bool ButtonEvents::update() {
-	bool passthruState = debouncedButton.update(); // update debounced button state
+  bool passthruState = debouncedButton.update(); // update debounced button state
 
-	if (buttonPressed()) {
+  if (buttonPressed()) {
+    // if the button was previously idle, store the press time and update the button state
+    if (buttonState == idle) {
+      pressTime_ms = millis();
+      buttonState = pressed;
+    }
 
-		// if the button was previously idle, store the press time and update the button state
-		if (buttonState == idle) {
-			pressTime_ms = millis();
-			buttonState = pressed;
-		}
+    // if the button was in a released state (waiting for a double tap), update the button
+    // state and indicate that a double tap event occurred
+    else if (buttonState == released) {
+      buttonState = idle;
+      buttonEvent = doubleTap;
+      return true;
+    }
+  }
 
-		// if the button was in a released state (waiting for a double tap), update the button
-		// state and indicate that a double tap event occurred
-		else if (buttonState == released) {
-			buttonState = idle;
-			buttonEvent = doubleTap;
-			return true;
-		}
-	}
+  else if (buttonReleased()) {
+    // if the button was in a pressed state, store the release time and update the button state
+    if (buttonState == pressed) {
+      releaseTime_ms = millis();
+      buttonState = released;
+    }
+  }
 
-	else if (buttonReleased()) {
+  // if the button is currently in a pressed state...
+  if (buttonState == pressed) {
+    // if the specified hold time has been reached or passed, update the button state and
+    // indicate that a hold event occurred
+    if ((millis() - pressTime_ms) >= holdTime_ms) {
+      buttonState = idle;
+      buttonEvent = hold;
+      return true;
+    }
+  }
 
-		// if the button was in a pressed state, store the release time and update the button state
-		if (buttonState == pressed) {
-			releaseTime_ms = millis();
-			buttonState = released;
-		}
-	}
+  // if the button is currently in a released state...
+  else if (buttonState == released) {
+    // if the specified double tap time has been reached or passed, update the button state
+    // and indicate that a (single) tap event occurred
+    if ((millis() - releaseTime_ms) >= doubleTapTime_ms) {
+      buttonState = idle;
+      buttonEvent = tap;
+      return true;
+    }
+  }
 
-	// if the button is currently in a pressed state...
-	if (buttonState == pressed) {
-
-		// if the specified hold time has been reached or passed, update the button state and
-		// indicate that a hold event occurred
-		if ((millis() - pressTime_ms) >= holdTime_ms) {
-			buttonState = idle;
-			buttonEvent = hold;
-			return true;
-		}
-	}
-
-	// if the button is currently in a released state...
-	else if (buttonState == released) {
-
-		// if the specified double tap time has been reached or passed, update the button state
-		// and indicate that a (single) tap event occurred
-		if ((millis() - releaseTime_ms) >= doubleTapTime_ms) {
-			buttonState = idle;
-			buttonEvent = tap;
-			return true;
-		}
-	}
-
-	// if we get to this point, indicate that no button event occurred in this cycle
-	buttonEvent = none;
-	return passthruState;
+  // if we get to this point, indicate that no button event occurred in this cycle
+  buttonEvent = none;
+  return passthruState;
 }
 
 // returns the last triggered event
 ButtonEvent ButtonEvents::event() {
-	return buttonEvent;
+  return buttonEvent;
 }
 
 // returns true if button was tapped
@@ -148,15 +144,15 @@ bool ButtonEvents::held() {
 
 // passthru to Bounce2 read() method
 bool ButtonEvents::read() {
-	return debouncedButton.read();
+  return debouncedButton.read();
 }
 
 // passthru to Bounce2 fell() method
 bool ButtonEvents::fell() {
-	return debouncedButton.fell();
+  return debouncedButton.fell();
 }
 
 // passthru to Bounce2 rose() method
 bool ButtonEvents::rose() {
-	return debouncedButton.rose();
+  return debouncedButton.rose();
 }
