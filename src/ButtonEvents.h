@@ -44,34 +44,37 @@ enum ButtonEvent { none, tap, doubleTap, hold };
 
 class ButtonEvents {
   public:
-		ButtonEvents(); // default constructor - follows the argument-free Bounce2 convention.  Use defaults, or set explicitly later
-		void attach(int pin); // passthru to Bounce2 attach() method
-		void attach(int pin, int mode); // passthru to Bounce2 attach() overload
+    // public methods...
+    ButtonEvents(); // default constructor - follows the argument-free Bounce2 convention.  Use defaults, or set explicitly later
+    void attach(int pin); // passthru to Bounce2 attach() method
+    void attach(int pin, int mode); // passthru to Bounce2 attach() overload
     void activeHigh(); // set button mode to active high
     void activeLow(); // set button mode to active low
     void debounceTime(unsigned int debounce_ms); // alias/passthru to Bounce2 interval() method
     void doubleTapTime(unsigned int doubleTap_ms); // method for setting the doubleTap event detection window
     void holdTime(unsigned int hold_ms); // method for setting the time required to trigger a hold event
     void interval(unsigned int interval_ms); // passthru to Bounce2 interval() method
-		bool update(); // calls the Bounce2 update() method, then runs button event detection logic
-		ButtonEvent event(); // returns the button event detected during update() call
+    bool update(); // calls the Bounce2 update() method, then runs button event detection logic
+    ButtonEvent event(); // returns the button event detected during update() call
     bool tapped(); // returns true if the 'tap' event was detected 
     bool doubleTapped(); // returns true if the 'doubleTap' event was detected
     bool held(); // returns true if the 'held' event was detected
     bool read(); // passthru to Bounce2 read() method;
-		bool fell(); // passthru to Bounce2 fell() method;
-		bool rose(); // passthru to Bounce2 rose() method;
+    bool fell(); // passthru to Bounce2 fell() method;
+    bool rose(); // passthru to Bounce2 rose() method;
 		
-	private:
-		unsigned long pressTime_ms; // remember when the button was pressed
-		unsigned long releaseTime_ms; // remember when the button was released
-		unsigned int doubleTapTime_ms; // how long to wait for a double tap after the initial button release 
-		unsigned int holdTime_ms; // how long the button must be held to generate a hold event
-		ButtonState buttonState; // current button state
-		ButtonEvent buttonEvent; // detected button event
+  private:
+    // private instance variables...
+    unsigned long pressTime_ms; // remember when the button was pressed
+    unsigned long releaseTime_ms; // remember when the button was released
+    unsigned int doubleTapTime_ms; // how long to wait for a double tap after the initial button release 
+    unsigned int holdTime_ms; // how long the button must be held to generate a hold event
+    ButtonState buttonState; // current button state
+    ButtonEvent buttonEvent; // detected button event
     bool isActiveLow;
-		Bounce debouncedButton; // button debounced using Thomas Fredericks' Bounce2 library
-
+    Bounce debouncedButton; // button debounced using Thomas Fredericks' Bounce2 library
+    
+    // private methods...
     bool buttonPressed(); // returns true if the button was pressed (accounts for active high/low)
     bool buttonReleased(); // returns true if the button was released (accounts for active high/low)
 };
