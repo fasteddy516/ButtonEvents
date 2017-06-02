@@ -31,6 +31,8 @@ class ButtonEvents {
     void holdTime(unsigned int hold_ms); // method for setting the time required to trigger a hold event
     void interval(unsigned int interval_ms); // passthru to Bounce2 interval() method
     bool update(); // calls the Bounce2 update() method, then runs button event detection logic
+    void reset(); // resets the saved button state to idle
+    void retime(); // sets the button event timestamp to the current value of millis()
     ButtonEvent event(); // returns the button event detected during update() call
     bool tapped(); // returns true if the 'tap' event was detected 
     bool doubleTapped(); // returns true if the 'doubleTap' event was detected
@@ -41,8 +43,7 @@ class ButtonEvents {
 		
   private:
     // private instance variables...
-    unsigned long pressTime_ms; // remember when the button was pressed
-    unsigned long releaseTime_ms; // remember when the button was released
+    unsigned long eventTime_ms; // remember when the button was pressed/released
     unsigned int doubleTapTime_ms; // how long to wait for a double tap after the initial button release 
     unsigned int holdTime_ms; // how long the button must be held to generate a hold event
     ButtonState buttonState; // current button state

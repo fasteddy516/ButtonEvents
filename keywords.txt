@@ -22,6 +22,8 @@ doubleTapTime	KEYWORD2
 holdTime		KEYWORD2
 interval		KEYWORD2
 update			KEYWORD2
+reset			KEYWORD2
+retime			KEYWORD2
 event			KEYWORD2
 tapped			KEYWORD2
 doubleTapped	KEYWORD2

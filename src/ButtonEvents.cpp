@@ -12,8 +12,7 @@ ButtonEvents::ButtonEvents() {
   doubleTapTime_ms = DEFAULT_DOUBLETAP_MS;
   holdTime_ms = DEFAULT_HOLD_MS;
   isActiveLow = DEFAULT_ACTIVE_LOW;
-  pressTime_ms = 0; // initialize button timestamps and states...
-  releaseTime_ms = 0;
+  eventTime_ms = 0; // initialize button timestamps and states...
   buttonState = idle;
   buttonEvent = none;
 }
@@ -79,7 +78,7 @@ bool ButtonEvents::update() {
   if (buttonPressed()) {
     // if the button was previously idle, store the press time and update the button state
     if (buttonState == idle) {
-      pressTime_ms = millis();
+      eventTime_ms = millis();
       buttonState = pressed;
     }
 
@@ -95,7 +94,7 @@ bool ButtonEvents::update() {
   else if (buttonReleased()) {
     // if the button was in a pressed state, store the release time and update the button state
     if (buttonState == pressed) {
-      releaseTime_ms = millis();
+      eventTime_ms = millis();
       buttonState = released;
     }
   }
@@ -104,7 +103,7 @@ bool ButtonEvents::update() {
   if (buttonState == pressed) {
     // if the specified hold time has been reached or passed, update the button state and
     // indicate that a hold event occurred
-    if ((millis() - pressTime_ms) >= holdTime_ms) {
+    if ((millis() - eventTime_ms) >= holdTime_ms) {
       buttonState = idle;
       buttonEvent = hold;
       return true;
@@ -115,7 +114,7 @@ bool ButtonEvents::update() {
   else if (buttonState == released) {
     // if the specified double tap time has been reached or passed, update the button state
     // and indicate that a (single) tap event occurred
-    if ((millis() - releaseTime_ms) >= doubleTapTime_ms) {
+    if ((millis() - eventTime_ms) >= doubleTapTime_ms) {
       buttonState = idle;
       buttonEvent = tap;
       return true;
@@ -125,6 +124,17 @@ bool ButtonEvents::update() {
   // if we get to this point, indicate that no button event occurred in this cycle
   buttonEvent = none;
   return passthruState;
+}
+
+// resets the saved button state to idle
+void ButtonEvents::reset() {
+  buttonState = idle;
+  buttonEvent = none;
+}
+
+// sets the button event timestamp to the current value of millis()
+void ButtonEvents::retime() {
+  eventTime_ms = millis();
 }
 
 // returns the last triggered event
