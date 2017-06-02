@@ -1,3 +1,8 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * *
+Written by Edward Wright (fasteddy@thewrightspace.net)
+Utilizes the Bounce2 library (https://github.com/thomasfredericks/Bounce2) by Thomas O Fredericks (tof@t-o-f.info)
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
 #include "Arduino.h"
 #include "ButtonEvents.h"
 
