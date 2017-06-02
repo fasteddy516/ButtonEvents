@@ -13,11 +13,11 @@
     to the serial monitor indicating when Bounce2 events are triggered.  
  */
 
-#include <ButtonEvents.h> // you have to include the library if you want to use it!
+#include <ButtonEvents.h> // we have to include the library in order to use it
 
-const byte buttonPin = 7; // the button will be connected to pin 7
+const byte buttonPin = 7; // our button will be connected to pin 7
 
-ButtonEvents myButton; // create an instance of a ButtonEvents object to associate with our button
+ButtonEvents myButton; // create an instance of the ButtonEvents class to attach to our button
 
 
 // this is where we run one-time setup code
@@ -31,30 +31,35 @@ void setup() {
 
   // set the debounce time to 50ms
   myButton.interval(50);
-  
+
   // initialize the arduino serial port and send a welcome message
   Serial.begin(9600);
-  Serial.println("ButtonEvents 'basic' example started");
+  Serial.println("ButtonEvents 'Passthru' example started");
 }
 
 
 // this is the main loop, which will repeat forever
 void loop() {
 
-  // update the ButtonEvents (and underlying Bounce2) instance
+  // Update the ButtonEvents (and underlying Bounce2) instance.  Remember that this update() method
+  // returns true if ButtonEvents *or* Bounce2 detects an event, so - if you are using the return
+  // value in your code - the results will be slightly different than when using the Bounce2
+  // update() method by itself.
   myButton.update();
-  
-  // show the value returned by the Bounce2 read() method
-  Serial.print("The value returned by myButton.read() is ");
-  Serial.println(myButton.read());
 
   // things to do if the debounced signal from the button pin went high
   if (myButton.rose() == true) {
-    Serial.println("Signal on button pin went HIGH");          
+    Serial.println("Signal on button pin went HIGH");
+    Serial.print("myButton.read() returns a value of ");
+    Serial.println(myButton.read());
+    Serial.println("---");
   }
 
   // things to do if the debounced signal from the button pin went low 
   if (myButton.fell() == true) {
-     Serial.println("Signal on button pin went LOW");
+    Serial.println("Signal on button pin went LOW");
+    Serial.print("myButton.read() returns a value of ");
+    Serial.println(myButton.read());
+    Serial.println("---");
   }
 }

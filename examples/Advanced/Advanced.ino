@@ -13,11 +13,11 @@
     indicating when events are triggered.  
  */
 
-#include <ButtonEvents.h> // you have to include the library if you want to use it!
+#include <ButtonEvents.h> // we have to include the library in order to use it
 
-const byte buttonPin = 7; // the button will be connected to pin 7
+const byte buttonPin = 7; // our button will be connected to pin 7
 
-ButtonEvents myButton; // create an instance of a ButtonEvents object to associate with our button
+ButtonEvents myButton; // create an instance of the ButtonEvents class to attach to our button
 
 
 // this is where we run one-time setup code
@@ -25,7 +25,7 @@ void setup() {
   
   // configure the button pin as a digital input with internal pull-up resistor enabled
   pinMode(buttonPin, INPUT_PULLUP);  
-  
+
   // attach our ButtonEvents instance to the button pin
   myButton.attach(buttonPin);
 
@@ -41,47 +41,34 @@ void setup() {
   // debounce time if necessary.
   myButton.debounceTime(15); //apply 15ms debounce
 
-  /* The ButtonEvents library is capable of detecting three types of button events:
-   
-       1) A 'tap' event is triggered after the button has been released, and the double-tap detection
-          window has elapsed with no further button presses.
-
-       2) A 'double-tap' event is triggered after the button has been released and is then pressed again
-          before the double-tap detection window has elapsed.
-
-       3) A 'press-and-hold' event is triggered after the button has been pressed and held down for the hold
-          duration.
-
-       The double-tap detection window is set to 150ms by default.  Decreasing this value will result in
-       more responsive single-tap events, but requires really fast tapping to trigger a double-tap event.
-       Increasing this value will allow slower taps to still trigger a double-tap event, but will make
-       single-tap events more laggy, and can cause taps that were meant to be separate to be treated as
-       double-taps.  The necessary timing really depends on your use case, but I have found 150ms to be a
-       reasonable middle-ground.  If you need to change the double-tap detection window, you can do so as
-       follows:
-  */
+  // The double-tap detection window is set to 150ms by default.  Decreasing this value will result in
+  // more responsive single-tap events, but requires really fast tapping to trigger a double-tap event.
+  // Increasing this value will allow slower taps to still trigger a double-tap event, but will make
+  // single-tap events more laggy, and can cause taps that were meant to be separate to be treated as
+  // double-taps.  The necessary timing really depends on your use case, but I have found 150ms to be a
+  // reasonable starting point.  If you need to change the double-tap detection window, you can do so
+  // as follows:
   myButton.doubleTapTime(250); // set double-tap detection window to 250ms
   
   // The hold duration can be increased to require longer holds before an event is triggered, or reduced to
   // have hold events trigger more quickly.
   myButton.holdTime(2000); // require button to be held for 2000ms before triggering a hold event
-  
-  
+   
   // initialize the arduino serial port and send a welcome message
   Serial.begin(9600);
-  Serial.println("ButtonEvents 'advanced' example started");
+  Serial.println("ButtonEvents 'Advanced' example started");
 }
 
 
 // this is the main loop, which will repeat forever
 void loop() {
 
-  // the update() method returns true if an event or state change occurred.  It serves as a passthru
+  // The update() method returns true if an event or state change occurred.  It serves as a passthru
   // to the Bounce2 library update() function as well, so it will stll return true if a press/release
   // is detected but has not triggered a tap/double-tap/hold event
   if (myButton.update() == true) {
 
-    // the event() method returns tap, doubleTap, hold or none depending on which event was detected
+    // The event() method returns tap, doubleTap, hold or none depending on which event was detected
     // the last time the update() method was called.  The following code accomplishes the same thing
     // we did in the 'Basic' example, but I personally prefer this arrangement.
     switch(myButton.event()) {
@@ -103,6 +90,7 @@ void loop() {
         Serial.println("HOLD event detected");
         break;
       }
+      
     }
-  }  
+  }
 }
