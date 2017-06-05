@@ -135,6 +135,12 @@ void ButtonEvents::reset() {
 // sets the button event timestamp to the current value of millis()
 void ButtonEvents::retime() {
   eventTime_ms = millis();
+  
+  // prevent double-tap from triggering after a call to retime() - only taps and holds
+  // can be effectivley retimed after a delay
+  if (buttonState == released) {
+    eventTime_ms += doubleTapTime_ms;
+  }  
 }
 
 // returns the last triggered event
