@@ -33,7 +33,8 @@
 # Details
 
   ButtonEvents can detect **tap**, **double-tap** and **press-and-hold** events
-  based on transitions that occur on a pin configured as a digital input.
+  based on transitions that occur on a pin configured as a digital input - generally
+  as the result of a button press.
 
   * A **tap** event is triggered after the button has been *released*, and the
     double-tap detection window has elapsed with no further button presses.
